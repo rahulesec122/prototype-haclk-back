@@ -95,9 +95,17 @@ app.add_middleware(
 app.include_router(chat_router)
 
 
+from pathlib import Path
+from fastapi.responses import FileResponse
+
+_FRONTEND_HTML = Path(__file__).resolve().parent.parent / "frontend" / "standalone.html"
+
+
 @app.get("/", tags=["root"])
 async def root():
-    """Root endpoint welcoming users and directing to API documentation."""
+    """Root endpoint serving the React UI or status JSON."""
+    if _FRONTEND_HTML.exists():
+        return FileResponse(_FRONTEND_HTML, media_type="text/html")
     return {
         "message": "Offline-First AI Assistant API is running",
         "docs": "/docs",
