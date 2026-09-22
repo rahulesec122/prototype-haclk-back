@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment secrets — NEVER commit .env
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# Pytest cache
+.pytest_cache/
+.cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
