@@ -28,3 +28,11 @@ htmlcov/
 .vscode/
 .idea/
 *.swp
+
+# Node / Frontend
+node_modules/
+dist/
+.env.local
+.env.*.local
+frontend/.env
+
