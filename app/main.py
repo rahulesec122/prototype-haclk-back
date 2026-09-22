@@ -95,7 +95,15 @@ app.add_middleware(
 app.include_router(chat_router)
 
 
-# ── Health endpoint ───────────────────────────────────────────────────────────
+@app.get("/", tags=["root"])
+async def root():
+    """Root endpoint welcoming users and directing to API documentation."""
+    return {
+        "message": "Offline-First AI Assistant API is running",
+        "docs": "/docs",
+        "health": "/health",
+        "chat": "/api/chat",
+    }
 
 
 @app.get("/health", response_model=HealthResponse, tags=["health"])
