@@ -189,7 +189,6 @@ async def list_conversations(
     db: AsyncSession = Depends(get_db),
 ) -> list[ConversationOut]:
     """GET /api/conversations — list all stored conversations."""
-<<<<<<< HEAD
     from sqlalchemy.orm import selectinload
 
     result = await db.execute(
@@ -197,10 +196,6 @@ async def list_conversations(
         .options(selectinload(Conversation.messages))
         .order_by(Conversation.updated_at.desc())
         .limit(50)
-=======
-    result = await db.execute(
-        select(Conversation).order_by(Conversation.updated_at.desc()).limit(50)
->>>>>>> b6969b8eb7d8149daa5aac9f76f7622825891da2
     )
     convs = result.scalars().all()
     return [ConversationOut.model_validate(c) for c in convs]

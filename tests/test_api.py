@@ -281,7 +281,6 @@ async def test_continue_conversation(client: AsyncClient):
     contents = [m["content"] for m in messages]
     assert "First message" in contents
     assert "Second message" in contents
-<<<<<<< HEAD
 
 
 # ── Test 8: List conversations ────────────────────────────────────────────────
@@ -293,6 +292,3 @@ async def test_list_conversations(client: AsyncClient):
     resp = await client.get("/api/conversations")
     assert resp.status_code == 200
     assert isinstance(resp.json(), list)
-
-=======
->>>>>>> b6969b8eb7d8149daa5aac9f76f7622825891da2
