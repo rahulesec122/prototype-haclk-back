@@ -35,7 +35,7 @@ export default function Header({ health, isRefreshing, onRefreshHealth }) {
           title={ollamaActive ? 'Ollama server is active on localhost:11434' : 'Ollama is offline or unreachable'}
         >
           <Cpu className="w-3.5 h-3.5" />
-          <span>Local Ollama</span>
+          <span>{ollamaActive ? 'Ollama Available' : 'Ollama Unavailable'}</span>
           <span className={`w-2 h-2 rounded-full ${ollamaActive ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`} />
         </div>
 
@@ -46,10 +46,10 @@ export default function Header({ health, isRefreshing, onRefreshHealth }) {
               ? 'bg-sky-500/10 border-sky-500/30 text-sky-300'
               : 'bg-slate-800 border-slate-700 text-slate-400'
           }`}
-          title={geminiActive ? 'Gemini API key is configured' : 'Gemini fallback key is not set'}
+          title={geminiActive ? 'Gemini API is configured & available' : 'Gemini fallback key is not set'}
         >
           <Cloud className="w-3.5 h-3.5" />
-          <span>Gemini Fallback</span>
+          <span>{geminiActive ? 'Gemini Available' : 'Gemini Offline'}</span>
           <span className={`w-2 h-2 rounded-full ${geminiActive ? 'bg-sky-400' : 'bg-slate-500'}`} />
         </div>
 

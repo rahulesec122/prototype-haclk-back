@@ -2,17 +2,41 @@
  * API service for communicating with the Offline-First AI Assistant backend.
  */
 
-const BASE_URL = import.meta.env?.VITE_API_URL || '';
+const getBaseUrl = () => {
+  const envUrl = import.meta.env?.VITE_API_URL;
+  if (envUrl && envUrl.trim()) {
+    return envUrl.trim().replace(/\/+$/, '');
+  }
+  return 'http://127.0.0.1:8001';
+};
+
+const BASE_URL = getBaseUrl();
 
 /**
  * Check backend health status (Ollama / Gemini availability).
+ * Resiliently checks configured base URL, proxy path, and direct backend.
  */
 export async function fetchHealth() {
-  const res = await fetch(`${BASE_URL}/health`);
-  if (!res.ok) {
-    throw new Error(`Health check failed: ${res.statusText}`);
+  const candidates = [
+    `${BASE_URL}/health`,
+    '/health',
+    'http://127.0.0.1:8001/health',
+    'http://localhost:8001/health',
+  ];
+  const uniqueUrls = [...new Set(candidates.filter(Boolean))];
+
+  for (const url of uniqueUrls) {
+    try {
+      const res = await fetch(url, { method: 'GET' });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (_) {
+      // Continue to next candidate
+    }
   }
-  return res.json();
+
+  throw new Error('Backend health check failed on all endpoints');
 }
 
 /**
@@ -57,18 +81,44 @@ export async function streamChatMessage({
   signal,
 }) {
   try {
-    const response = await fetch(`${BASE_URL}/api/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message,
-        conversation_id: conversationId || undefined,
-        stream: true,
-      }),
-      signal,
+    const candidates = [
+      `${BASE_URL}/api/chat`,
+      '/api/chat',
+      'http://127.0.0.1:8001/api/chat',
+      'http://localhost:8001/api/chat',
+    ];
+    const uniqueUrls = [...new Set(candidates.filter(Boolean))];
+
+    const bodyPayload = JSON.stringify({
+      message,
+      conversation_id: conversationId || undefined,
+      stream: true,
     });
+
+    let response = null;
+    let lastNetworkErr = null;
+
+    for (const url of uniqueUrls) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: bodyPayload,
+          signal,
+        });
+        response = res;
+        break;
+      } catch (fetchErr) {
+        if (fetchErr.name === 'AbortError') throw fetchErr;
+        lastNetworkErr = fetchErr;
+      }
+    }
+
+    if (!response) {
+      throw lastNetworkErr || new Error('Unable to connect to chat endpoint');
+    }
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));

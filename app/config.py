@@ -42,7 +42,7 @@ class Settings(BaseSettings):
         description="Google Gemini API key (leave blank when offline-only).",
     )
     gemini_model: str = Field(
-        default="gemini-2.0-flash",
+        default="gemini-3.6-flash",
         description="Gemini model name.",
     )
 
@@ -56,8 +56,13 @@ class Settings(BaseSettings):
     cors_origins: List[str] = Field(
         default=[
             "http://localhost:3000",
+            "http://127.0.0.1:3000",
             "http://localhost:5173",
+            "http://127.0.0.1:5173",
             "http://localhost:8000",
+            "http://127.0.0.1:8000",
+            "http://localhost:8001",
+            "http://127.0.0.1:8001",
         ],
         description="Comma-separated list of allowed CORS origins.",
     )

@@ -26,7 +26,11 @@ export default function App() {
     setIsRefreshingHealth(true);
     try {
       const data = await fetchHealth();
-      setHealth(data);
+      setHealth({
+        status: data.status || 'healthy',
+        ollama: Boolean(data.ollama),
+        gemini: Boolean(data.gemini),
+      });
     } catch (err) {
       console.warn('Backend unreachable:', err);
       setHealth({ status: 'unreachable', ollama: false, gemini: false });
@@ -183,7 +187,7 @@ export default function App() {
     }
   };
 
-  const allProvidersOffline = !health.ollama && !health.gemini;
+  const allProvidersOffline = health.status !== 'unknown' && !health.ollama && !health.gemini;
 
   return (
     <div className="flex flex-col h-screen w-screen bg-slate-900 text-slate-100 overflow-hidden">
@@ -215,6 +219,7 @@ export default function App() {
             onSendMessage={handleSendMessage}
             onStopStreaming={handleStopStreaming}
             isStreaming={isStreaming}
+            disabled={isStreaming}
             allProvidersOffline={allProvidersOffline}
           />
         </main>

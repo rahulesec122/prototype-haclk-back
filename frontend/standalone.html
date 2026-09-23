@@ -25,7 +25,7 @@
     const { useState, useEffect, useRef } = React;
 
     // Detect API base URL
-    const API_BASE = window.location.origin.includes('8000') ? window.location.origin : 'http://localhost:8000';
+    const API_BASE = window.location.origin.includes('8001') ? window.location.origin : 'http://127.0.0.1:8001';
 
     function App() {
       const [health, setHealth] = useState({ status: 'unknown', ollama: false, gemini: false });
